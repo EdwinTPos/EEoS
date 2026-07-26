@@ -1,15 +1,20 @@
-########################
+# =====================================================================
 # Code for
 # A coherent signature of disturbance in successional forests
 # Code written and maintained by Edwin Pos and Erica Newman
 # E.T.Pos@uu.nl, ericanewman.sci@gmail.com
 # Updated July 13, 2026
-########################
+# =====================================================================
 
-#Clear environment
+# ==================================================
+# Clear environment, load libraries and dependencies
+# ==================================================
+
+# Clearing environment
 rm(list=ls())
 rm(list = ls(all.names = TRUE))
 
+# Install packages if needed
 #install.packages(c("BIOMASS","meteR","labdsv","philentropy", "factoextra",
 #                 "vegan","gridExtra", "untb", "lmtest", "CausalImpact",
 #                 "gifski","ggplot2","reshape2","cowplot","maps",
