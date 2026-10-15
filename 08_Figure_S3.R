@@ -3,7 +3,7 @@
 # A coherent signature of disturbance in successional forests
 # Code written and maintained by Edwin Pos and Erica Newman
 # E.T.Pos@uu.nl, ericanewman.sci@gmail.com
-# Updated July 13, 2026
+# Updated October 6, 2026
 # =====================================================================
 
 # =========================================
@@ -45,14 +45,14 @@ my_colors <-     c("CR" =       "#51310B",
                    "TIR" =      "#332288")
 custom_colors <- my_colors
 
-my_shapes <- c("CR" =       21, 
-               "FEB" =      8, 
-               "JE" =        24, 
-               "LEP" =      25, 
-               "LEPviejo" = 12, 
-               "LSUR" =     23, 
-               "SV" =        22, 
-               "TIR" =       3)
+my_shapes <- c("CR" =       16,   # filled circle, secondary
+               "FEB" =      16,   # filled circle, secondary
+               "JE" =       16,   # filled circle, secondary
+               "LEP" =      16,   # filled circle, secondary
+               "LEPviejo" = 15,   # filled square -> primary
+               "LSUR" =     16,   # filled circle, secondary
+               "SV" =       15,   # filled square -> primary
+               "TIR" =      16)   # filled circle, secondary
 
 plot_list <- trees %>%
   pivot_longer(cols = c(S, N, E, Evenness), names_to = "Variable", values_to = "Value") %>%
@@ -87,8 +87,28 @@ plot_list <- trees %>%
       )
   })
 
+evenness_plot <- ggplot(trees, aes(x = Year, y = Evenness, color = Plot, fill = Plot, shape = Plot)) +
+      geom_line(aes(color = Plot), linewidth = 1, alpha = 0.5) +
+      geom_point(size = 2, stroke = 0.5, alpha = .8) +
+      scale_color_manual(values = my_colors) +
+      scale_fill_manual(values = my_colors) +
+      scale_shape_manual(values = my_shapes) +
+      scale_x_continuous(labels = function(x) round(x, 0)) +
+      labs(
+        title = paste("Hill Evenness"),
+        x = "Year",
+        y = "Hill Eveness"
+      ) +
+      theme_bw(base_size = 11) +
+      theme(
+        aspect.ratio = 1,
+        legend.position = "right",
+        legend.title = element_text(size = 12, face = "plain") 
+      )
+
+
 # 2x2 layout: plots 1 & 2 on top, plot 3 + collected legend on bottom
-fig_s3 <- (plot_list[[1]] + plot_list[[2]] +
+fig_s3 <- (plot_list[[1]] + evenness_plot +
                         plot_list[[3]] + plot_list[[4]]) + 
                        plot_layout(ncol = 2, guides = "collect")
 # View and Save
