@@ -3,7 +3,7 @@
 # A coherent signature of disturbance in successional forests
 # Code written and maintained by Edwin Pos and Erica Newman
 # E.T.Pos@uu.nl, ericanewman.sci@gmail.com
-# Updated July 13, 2026
+# Updated October 6, 2026
 # =====================================================================
 
 # ================================================
@@ -45,7 +45,7 @@ write.csv(output_table, "output_table.csv", row.names = FALSE)
 
 # Custom color palette and custom shapes
 
-my_colors <-     c("CR" =       "#51310B", 
+custom_colors <-     c("CR" =       "#51310B", 
                    "FEB" =      "#8E4F00", 
                    "JE" =       "#DEC27C",
                    "LEP" =      "#999933",
@@ -53,17 +53,16 @@ my_colors <-     c("CR" =       "#51310B",
                    "LSUR" =     "#7CCCBE",  
                    "SV" =       "#33BBEE", 
                    "TIR" =      "#332288")
-custom_colors <- my_colors
 
-my_shapes <- c("CR" =       21, 
-               "FEB" =      8, 
-               "JE" =        24, 
-               "LEP" =      25, 
-               "LEPviejo" = 12, 
-               "LSUR" =     23, 
-               "SV" =        22, 
-               "TIR" =       3)
-
+my_shapes <- c("CR" =       16,   # filled circle, secondary
+               "FEB" =      16,   # filled circle, secondary
+               "JE" =       16,   # filled circle, secondary
+               "LEP" =      16,   # filled circle, secondary
+               "LEPviejo" = 15,   # filled square -> primary
+               "LSUR" =     16,   # filled circle, secondary
+               "SV" =       15,   # filled square -> primary
+               "TIR" =      16)   # filled circle, secondary
+               
 #Set category (combination of plot and foresttype) for nice plotting
 output_table$Category = paste(output_table$Foresttype,","," ",
                               output_table$Plot)
@@ -158,78 +157,95 @@ sad.graph <-
 # OPTION 2: separate figures for each location -> this was used in the manuscript
 # ===============================================================================
 
-desired_order <- c("SV", "LEPviejo", "CR", "FEB", "LEP", "TIR", "LSUR", "JE")
+desired_order <- c("SV", "LEPviejo", "CR", "FEB", "LEP", "LSUR", "TIR" , "JE")
 
 make_plot <- function(plot_name) {
 
   plot_data <- output_table %>% filter(Plot == plot_name)
   if (nrow(plot_data) == 0) return(NULL)
-  
+
+  forest_type <- unique(plot_data$Foresttype)
+  if (length(forest_type) != 1) forest_type <- paste(forest_type, collapse = "/")
+  title_label <- paste(plot_name, " (", forest_type, ")", sep = "")
+
   year_range <- range(plot_data$Year, na.rm = TRUE)
-  
-df_long <- plot_data %>%
-  pivot_longer(
-    cols = c(metabol_KL, abundan_KL),
-    names_to = "Metric_Label",
-    values_to = "KL_Value"
-  ) %>%
-  mutate(
-    Metric_Label = factor(
-      recode(Metric_Label,
-             "metabol_KL" = "IPD",
-             "abundan_KL" = "SAD"),
-      levels = c("IPD", "SAD") # Explicitly set the order here
+
+  df_long <- plot_data %>%
+    pivot_longer(
+      cols      = c(metabol_KL, abundan_KL),
+      names_to  = "Metric_Label",
+      values_to = "KL_Value"
+    ) %>%
+    mutate(
+      Metric_Label = factor(
+        recode(Metric_Label,
+               "metabol_KL" = "IPD",
+               "abundan_KL" = "SAD"),
+        levels = c("IPD", "SAD")
+      )
     )
-  )
 
   ggplot(df_long, aes(
-    x = as.numeric(Year),
-    y = as.numeric(KL_Value),
-    color = Plot,  # Color now controls the lines and the open shape outlines
+    x     = as.numeric(Year),
+    y     = as.numeric(KL_Value),
+    color = Plot,
     group = interaction(Metric_Label, Category)
   )) +
-    # Wide lines for trends
     geom_smooth(
       aes(linetype = Metric_Label),
-      method = "loess", 
-      span = 0.75,
-      se = FALSE,
-      linewidth = 1.8, 
+      method = "loess", span = 0.75, se = FALSE,
+      linewidth = 2.2,          # thicker trend lines
       alpha = 0.8
     ) +
-    # Open points (0 = square, 1 = circle)
     geom_point(
-      aes(shape = Metric_Label), 
-      size = 2, 
-      stroke = 1, # Controls the thickness of the open shape borders
-      alpha = 0.6
-    ) + 
-    scale_color_manual(values = custom_colors, drop = FALSE) +
-    # IPD (metabol_KL) should be solid, SAD (abundan_KL) should be dashed
-    scale_linetype_manual(values = c("IPD" = "solid", "SAD" = "dashed")) +
-    scale_shape_manual(values = c("IPD" = 0, "SAD" = 1)) + # 0: Open Square, 1: Open Circle
-    scale_x_continuous(breaks = seq(as.numeric(year_range)[1],as.numeric(year_range)[2], by = 5)) +
-    ylim(0,.5) +
-    labs(title = plot_name, x = NULL, y = NULL) +
+      aes(shape = Metric_Label),
+      size = 3.8,               # larger symbols
+      stroke = 1.3,             # thicker symbol strokes
+      alpha = 0.7
+    ) +
+    # hide the per-plot colour legend so only the metric legend is collected
+    scale_color_manual(values = custom_colors, drop = FALSE, guide = "none") +
+    # same name (NULL) on both -> they merge into ONE legend key
+    scale_linetype_manual(name = NULL,
+      values = c("IPD" = "solid", "SAD" = "dashed")) +
+    scale_shape_manual(name = NULL,
+      values = c("IPD" = 8, "SAD" = 3)) +   # 8 = asterisk, 3 = cross (+); use 4 for x
+    # make the line/symbol in the legend key large & thick (must match on both to merge)
+    guides(
+      shape    = guide_legend(override.aes = list(linewidth = 2.2, size = 5, stroke = 1.3)),
+      linetype = guide_legend(override.aes = list(linewidth = 2.2, size = 5, stroke = 1.3))
+    ) +
+    scale_x_continuous(
+      breaks = seq(as.numeric(year_range)[1], as.numeric(year_range)[2], by = 5)
+    ) +
+    ylim(0, .5) +
+    # identical titles on every panel -> collected into one shared pair
+    labs(title = title_label, x = "Year", y = "KL Divergence") +
     theme_bw() +
     theme(
-      legend.position = "none",
-      plot.title = element_text(hjust = 0.5, face = "bold", size = 18),
+      plot.title  = element_text(hjust = 0.5, face = "bold", size = 18),
+      axis.title  = element_text(size = 20),
       axis.text.x = element_text(size = 18, angle = 45, hjust = 1),
       axis.text.y = element_text(size = 18),
-      legend.title = element_text(size = 12, face = "plain") 
+      legend.text = element_text(size = 18)
+      # note: NO legend.position = "none" here — the legend must exist to be collected
     )
 }
 
-# Generate and combine as before
 plot_list <- lapply(desired_order, make_plot)
 plot_list <- plot_list[!sapply(plot_list, is.null)]
 
-# Build the composite plot
-composite_plot <- wrap_plots(plot_list, ncol = 4, nrow = 2) +
-  plot_annotation(
-    title = "KL Divergence: IPD (Solid/Open Square) vs SAD (Dotted/Open Circle)"
+composite_plot <- (
+  wrap_plots(plot_list, ncol = 4, nrow = 2) +
+    plot_layout(guides = "collect", axis_titles = "collect")
+) &
+  theme(
+    legend.position  = "bottom",
+    legend.text      = element_text(size = 18),
+    legend.key.width = unit(2.2, "cm")   # widen keys so solid vs dashed reads clearly
   )
+
+composite_plot
 
 # Save it
 ggsave("Figure_04.png", 
