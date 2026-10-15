@@ -373,9 +373,9 @@ bootstrap_treedata <- function(data,
       )
 
     # Step D: robust aggregation of B and E per PlotCode + Year
-    B_boot <- aggregate_robust(sampled_data, "B", robust, trim) %>%
+    B_boot <- aggregate_robust(sampled_data, "B") %>%
       rename(B_sum = value)
-    E_boot <- aggregate_robust(sampled_data, "E", robust, trim) %>%
+    E_boot <- aggregate_robust(sampled_data, "E") %>%
       rename(E_sum = value)
 
     # Step E: merge metrics with metadata
