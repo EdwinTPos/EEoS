@@ -3,7 +3,7 @@
 # A coherent signature of disturbance in successional forests
 # Code written and maintained by Edwin Pos and Erica Newman
 # E.T.Pos@uu.nl, ericanewman.sci@gmail.com
-# Updated July 13, 2026
+# Updated October 6, 2026
 # =====================================================================
 
 # ==================================================
@@ -76,6 +76,11 @@ mc_results <- mc_results |>
   mutate(across(c(AGB_mean, AGB_med, AGB_sd, AGB_lwr, AGB_upr),
                 ~ .x * 1000))
 
+save(mc_results, file = "mc_results.Rdata")
+
+#Load data if continuing from previous run
+load("mc_results.Rdata")
+
 biomass_precision <- mc_results %>%
   mutate(Year = suppressWarnings(as.integer(Year))) %>%
   group_by(PlotName) %>%
@@ -105,8 +110,8 @@ biomass_precision_disp <- biomass_precision %>%
 print(biomass_precision_disp)
 
 #Table of precision results -> not used for the manuscript
-#write.csv(biomass_precision_disp, "table_S6_biomass_precision.csv", row.names = FALSE) 
-
+write.csv(biomass_precision_disp, "table_S6_biomass_precision.csv", row.names = FALSE) 
+#biomass_precision_disp <- read.csv("table_S6_biomass_precision.csv")
  
 # ===================================
 # Visualizations of error propagation
@@ -123,15 +128,14 @@ my_colors <-     c("CR" =       "#51310B",
                    "SV" =       "#33BBEE", 
                    "TIR" =      "#332288")
 
-
-my_shapes <- c("CR" =       21, 
-               "FEB" =      8, 
-               "JE" =        24, 
-               "LEP" =      25, 
-               "LEPviejo" = 12, 
-               "LSUR" =     23, 
-               "SV" =        22, 
-               "TIR" =       3)
+my_shapes <- c("CR" =       16,   # filled circle, secondary
+               "FEB" =      16,   # filled circle, secondary
+               "JE" =       16,   # filled circle, secondary
+               "LEP" =      16,   # filled circle, secondary
+               "LEPviejo" = 15,   # filled square -> primary
+               "LSUR" =     16,   # filled circle, secondary
+               "SV" =       15,   # filled square -> primary
+               "TIR" =      16)   # filled circle, secondary
 
 # =======================================================
 # FIGURE S4A: Plot-level AGB with 95% CI, faceted by plot
@@ -147,14 +151,14 @@ Plot_levelAGB_certainty <- ggplot(mc_results, aes(x = Year, y = log(AGB_mean),
   scale_fill_manual(values = my_colors) +
   scale_shape_manual(values = my_shapes) +
   labs(x = "Year", y = "Plot log(B) ± 95% CI", title = "Plot-level B with propagated uncertainty") +
-  theme_bw(base_size = 11) +
+  theme_bw(base_size = 9) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1), legend.position = "none",
-        legend.title = element_text(size = 12, face = "plain")) 
+        legend.title = element_text(size = 9, face = "plain")) 
 
 # 2. Add text in space for "9th" panel so the figure is a nice square
 Final_Plot <- ggdraw(Plot_levelAGB_certainty) +
   draw_label(
-    label = "Note: difference in AGB\nis because for analyses\n it is normalized\n on ind level", 
+    label = " ", 
     x = 0.84,       # Horizontal position (0 = left, 1 = right)
     y = 0.20,       # Vertical position (0 = bottom, 1 = top)
     hjust = 0.5,    # Centre text horizontally
@@ -174,7 +178,6 @@ ggsave("figure_S4A.png",
        units = "in", # Units: "in", "cm", "mm", or "px"
        dpi = 300)    # Resolution
 
-
 # ====================================================
 # Figure S4B: coefficient of variation per plot × year
 # ====================================================
@@ -190,8 +193,7 @@ Error_CV_biomass <- ggplot(mc_results, aes(x = Year, y = CV_pct,
   scale_fill_manual(name = "Plot", values = my_colors) + 
   scale_shape_manual(name = "Plot", values = my_shapes) +
   labs(x = "Year", 
-       y = "CV of AGB estimate (%)",
-       title = "Relative uncertainty per plot × year") +
+       y = "CV of AGB estimate (%)") +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1), legend.position = "right",
     legend.title = element_text(size = 12, face = "plain"))+
   theme_bw(base_size = 11)
