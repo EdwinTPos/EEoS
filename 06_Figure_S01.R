@@ -3,7 +3,7 @@
 # A coherent signature of disturbance in successional forests
 # Code written and maintained by Edwin Pos and Erica Newman
 # E.T.Pos@uu.nl, ericanewman.sci@gmail.com
-# Updated July 13, 2026
+# Updated October 6, 2026
 # =====================================================================
 
 # ===============
