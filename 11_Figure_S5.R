@@ -18,7 +18,7 @@
 library(dplyr)
 library(ggplot2)
 
-source("12_functions_EoS.R")
+source("13_functions_EoS.R")
 
 # Set column in the data holding the forest-location codes
 location_col <- "PlotName"         
