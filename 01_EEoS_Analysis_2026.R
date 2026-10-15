@@ -1,20 +1,15 @@
-# =====================================================================
+########################
 # Code for
 # A coherent signature of disturbance in successional forests
 # Code written and maintained by Edwin Pos and Erica Newman
 # E.T.Pos@uu.nl, ericanewman.sci@gmail.com
-# Updated July 13, 2026
-# =====================================================================
+# Updated October 6, 2026
+########################
 
-# ==================================================
-# Clear environment, load libraries and dependencies
-# ==================================================
-
-# Clearing environment
+#Clear environment
 rm(list=ls())
 rm(list = ls(all.names = TRUE))
 
-# Install packages if needed
 #install.packages(c("BIOMASS","meteR","labdsv","philentropy", "factoextra",
 #                 "vegan","gridExtra", "untb", "lmtest", "CausalImpact",
 #                 "gifski","ggplot2","reshape2","cowplot","maps",
@@ -50,6 +45,7 @@ source("12_functions_EoS.R")
 
 #Load prepared dataset and remove LSURnew (see main text of manuscript); original data used for manuscript
 plantdata <- read.csv("LivingTrees1997-2017.csv", header=T) #Original data from dryad: https://doi.org/10.5061/dryad.ncjsxksvr
+#plantdata <- read.csv("Costa_Rica_plotdata.csv", header=T) #Mutated data with WD
 
 #Remove all non-trees
 plantdata <- plantdata[plantdata$LifeForm %in% c("tree","midtree","palm","understory palm","Tree","treelet","arbol","Treelet","Palm"),]
