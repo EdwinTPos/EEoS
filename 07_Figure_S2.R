@@ -3,7 +3,7 @@
 # A coherent signature of disturbance in successional forests
 # Code written and maintained by Edwin Pos and Erica Newman
 # E.T.Pos@uu.nl, ericanewman.sci@gmail.com
-# Updated July 13, 2026
+# Updated October 6, 2026
 # =====================================================================
 
 # ======================================
@@ -37,14 +37,14 @@ my_colors <-     c("CR" =       "#51310B",
                    "TIR" =      "#332288")
 
 
-my_shapes <- c("CR" =       21, 
-               "FEB" =      8, 
-               "JE" =        24, 
-               "LEP" =      25, 
-               "LEPviejo" = 12, 
-               "LSUR" =     23, 
-               "SV" =        22, 
-               "TIR" =       3)
+my_shapes <- c("CR" =       16,   # filled circle, secondary
+               "FEB" =      16,   # filled circle, secondary
+               "JE" =       16,   # filled circle, secondary
+               "LEP" =      16,   # filled circle, secondary
+               "LEPviejo" = 15,   # filled square -> primary
+               "LSUR" =     16,   # filled circle, secondary
+               "SV" =       15,   # filled square -> primary
+               "TIR" =      16)   # filled circle, secondary
 
 # 1. Define specific order of calculation
 desired_order <- c("SV", "LEPviejo", "CR", "FEB", "LEP", "TIR", "LSUR", "JE")
