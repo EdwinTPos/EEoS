@@ -23,7 +23,7 @@ library(ggplot2)
 library(patchwork)
 library(dplyr)
 
-source("12_functions_EoS.R")
+source("13_functions_EoS.R")
 
 # Load data and run function to compare IPD and RAD results between predicted by METE 
 # and observed from empirical data
