@@ -23,7 +23,7 @@ library(ggplot2)
 library(indicspecies)
 library(patchwork)
 
-source("12_functions_EoS.R")
+source("13_functions_EoS.R")
 
 # Load full composition data
 plantdata <- read.csv("LivingTrees1997-2017.csv", header=T) #Original data from dryad: https://doi.org/10.5061/dryad.ncjsxksvr
