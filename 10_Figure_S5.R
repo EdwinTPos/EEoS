@@ -3,7 +3,7 @@
 # A coherent signature of disturbance in successional forests
 # Code written and maintained by Edwin Pos and Erica Newman
 # E.T.Pos@uu.nl, ericanewman.sci@gmail.com
-# Updated July 13, 2026
+# Updated October 6, 2026
 # =====================================================================
 
 # ================================================================================
@@ -32,14 +32,15 @@ my_colors <- c("CR"       = "#51310B",
                "LSUR"     = "#7CCCBE",
                "SV"       = "#33BBEE",
                "TIR"      = "#332288")
-my_shapes <- c("CR"       = 21,
-               "FEB"      = 8,
-               "JE"       = 24,
-               "LEP"      = 25,
-               "LEPviejo" = 12,
-               "LSUR"     = 23,
-               "SV"       = 22,
-               "TIR"      = 3)
+
+my_shapes <- c("CR" =       16,   # filled circle, secondary
+               "FEB" =      16,   # filled circle, secondary
+               "JE" =       16,   # filled circle, secondary
+               "LEP" =      16,   # filled circle, secondary
+               "LEPviejo" = 15,   # filled square -> primary
+               "LSUR" =     16,   # filled circle, secondary
+               "SV" =       15,   # filled square -> primary
+               "TIR" =      16)   # filled circle, secondary
 
 # Set warning if a location code is missing from the palette
 palette_check <- function(x) {
@@ -79,6 +80,9 @@ acc <- accumulation_curve_B(
 palette_check(acc[[location_col]])
 acc$location <- factor(as.character(acc[[location_col]]),
                        levels = names(my_colors))
+
+save(acc, file = "acc_results.Rdata")
+load("acc_results.Rdata")
 
 #Plot figure 5A
 p_S5A <- ggplot(acc, aes(x = n_quadrats, y = log(B_estimate),
