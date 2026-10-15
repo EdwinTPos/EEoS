@@ -3,7 +3,7 @@
 # A coherent signature of disturbance in successional forests
 # Code written and maintained by Edwin Pos and Erica Newman
 # E.T.Pos@uu.nl, ericanewman.sci@gmail.com
-# Updated July 13, 2026
+# Updated October 6, 2026
 # =====================================================================
 
 # =================================================
@@ -13,8 +13,6 @@
 #Clear environment, set working directory here and load libraries
 #rm(list=ls())
 #rm(list = ls(all.names = TRUE))
-
-#install.packages("ggraph")
 
 # Load libraries and dependencies
 library(ggplot2)
@@ -43,15 +41,14 @@ my_colors <-     c("CR" =       "#51310B",
                    "TIR" =      "#332288")
 
 
-my_shapes <- c("CR" =       21, 
-               "FEB" =      8, 
-               "JE" =        24, 
-               "LEP" =      25, 
-               "LEPviejo" = 12, 
-               "LSUR" =     23, 
-               "SV" =        22, 
-               "TIR" =       3)
-
+my_shapes <- c("CR" =       16,   # filled circle, secondary
+               "FEB" =      16,   # filled circle, secondary
+               "JE" =       16,   # filled circle, secondary
+               "LEP" =      16,   # filled circle, secondary
+               "LEPviejo" = 15,   # filled square -> primary
+               "LSUR" =     16,   # filled circle, secondary
+               "SV" =       15,   # filled square -> primary
+               "TIR" =      16)   # filled circle, secondary9)    # open but crossed parallelogram
 
 trees$Plot <- factor(trees$Plot)
 
@@ -62,9 +59,8 @@ trees$Plot <- reorder(trees$Plot, -trees$B, FUN = max, na.rm = TRUE)
 
 figure_02A <- ggplot(
   trees,
-  aes(log(pBnum_exact), log(B), color = Plot, shape = Plot)
-) +
-  geom_point(size = 1, stroke = 1, alpha = 0.7) +
+  aes(log(pBnum_exact), log(B), color = Plot, shape = Plot)) +
+  geom_point(size = 2.25, stroke = 1, alpha = 0.7) +
   
   # To merge into ONE legend, 'name' must be exactly the same in both scales
   scale_color_manual(name = "Plot", values = my_colors) +
@@ -72,19 +68,18 @@ figure_02A <- ggplot(
   
   coord_cartesian(xlim = c(10.3, 12), ylim = c(10.3, 12)) + 
   geom_abline(intercept = 0, slope = 1, linetype = "dashed", color = "gray20", alpha = 0.5) +
-  
   theme_bw(base_size = 11) +
   theme(
     legend.position = "right",
-    legend.title = element_text(size = 12, face = "plain") 
+    legend.title = element_text(size = 11, face = "plain") 
   ) +
   labs(x = "Ln(predicted biomass)", y = "Ln(observed biomass)")
 
 #figure_02A
 
-ggsave("figure_02A.png", 
-       plot = figure_02A, 
-       width = 5,    # Width of the plot
-       height = 3.5,   # Height of the plot
-       units = "in", # Units: "in", "cm", "mm", or "px"
-       dpi = 300)    # Resolution
+# ggsave("figure_02A.png", 
+#       plot = figure_02A, 
+#       width = 5,    # Width of the plot
+#       height = 3.5,   # Height of the plot
+#       units = "in", # Units: "in", "cm", "mm", or "px"
+#       dpi = 300)    # Resolution
